@@ -1,27 +1,39 @@
 import { useState } from "react"
+import { useForm } from "../hooks/useForm"
+
+
 
 
 export const TodoAdd = ({onNewTodo}) => {
 
-  const [newTodo, setNewTodo] = useState({
-    id: new Date().getTime(),
-    description: '',
-    done: false
+  const {description, onInputChange, onResetForm} = useForm({
+    description: '' 
   })
 
-  const handleOnChange = (event) => {
 
-    setNewTodo({...newTodo, description: event.target.value})
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+    if (description.length <= 1) return;
+    
+    const newTodo = {
+      id: new Date().getTime(),
+      description: description,
+      done: false
+    }
+
+    onNewTodo(newTodo)
+    onResetForm();
   }
 
   return (
-    <form onSubmit={() => onNewTodo(newTodo)}>
+    <form onSubmit={handleOnSubmit}>
       <input 
         type="text"
         placeholder="Que hay que hacer?"
         className="form-control"
-        // value={''}
-        onChange={handleOnChange}
+        name="description"
+        value={description}
+        onChange={onInputChange}
       />
 
       <button
